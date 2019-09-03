@@ -1,0 +1,116 @@
+#include<Wire.h>
+int x,y,z;
+byte cheker;
+void setup() {
+// put your setup code here, to run once:
+delay(2000); // 2 seconds extra for mpu to boot up
+Wire.begin();
+Wire.beginTransmission(0x68);
+Wire.write(0x6B);
+Wire.write(0);
+Wire.endTransmission(true);
+delay(200);
+//
+Wire.beginTransmission(0x68);
+Wire.write(0x19);
+Wire.write(0x04); // new sampling rate is 200Hz
+Wire.endTransmission(true);
+delay(200);
+//
+Wire.beginTransmission(0x68);
+Wire.write(0x1A);
+Wire.write(0x03);
+Wire.endTransmission(true);
+delay(200);
+//
+Wire.beginTransmission(0x68);
+Wire.write(0x38);
+Wire.write(0x01);
+Wire.endTransmission(true);
+delay(200);
+//
+Wire.beginTransmission(0x68);
+Wire.write(0x0D);
+Wire.write(0x80);
+Wire.endTransmission(true);
+delay(200);
+//
+Wire.beginTransmission(0x68);
+Wire.write(0x0E);
+Wire.write(0x80);
+Wire.endTransmission(true);
+delay(200);
+//
+Wire.beginTransmission(0x68);
+Wire.write(0x0F);
+Wire.write(0x80);
+Wire.endTransmission(true);
+delay(200);
+//
+Wire.beginTransmission(0x68);
+Wire.write(0x10);
+Wire.write(0x00);
+Wire.endTransmission(true);
+delay(200);
+//
+Wire.beginTransmission(0x68);
+Wire.write(0x1C);
+Wire.write(0x10);
+Wire.endTransmission(true);
+delay(200);
+//
+Serial.begin(9600);
+
+// fetching acceleration values:
+L1: Wire.beginTransmission(0x68);
+    Wire.write(0x3A);
+    Wire.endTransmission(false);
+    Wire.requestFrom(0x68,1,true);
+    cheker=Wire.read();
+    if(cheker & 1 == 0)
+    goto L1;
+    Wire.beginTransmission(0x68);
+    Wire.write(0x3B);
+    Wire.endTransmission(false);
+    Wire.requestFrom(0x68,6,true); //requesting two bytes H and L each x,y,z
+    x = Wire.read()<<8 | Wire.read(); 
+    y = Wire.read()<<8 | Wire.read();
+    z = Wire.read()<<8 | Wire.read();
+    Serial.print(x);
+    Serial.print(',');
+    Serial.print(y);
+    Serial.print(',');
+    Serial.println(z);
+
+Wire.beginTransmission(0x68);
+Wire.write(0x1C);
+Wire.write(0xF0);
+Wire.endTransmission(true);
+delay(500);
+
+// fetching test enabled acceleration values:
+L2: Wire.beginTransmission(0x68);
+    Wire.write(0x3A);
+    Wire.endTransmission(false);
+    Wire.requestFrom(0x68,1,true);
+    cheker=Wire.read();
+    if(cheker & 1 == 0)
+    goto L2;
+    Wire.beginTransmission(0x68);
+    Wire.write(0x3B);
+    Wire.endTransmission(false);
+    Wire.requestFrom(0x68,6,true); //requesting two bytes H and L each x,y,z
+    x = Wire.read()<<8 | Wire.read(); 
+    y = Wire.read()<<8 | Wire.read();
+    z = Wire.read()<<8 | Wire.read();
+    Serial.print(x);
+    Serial.print(',');
+    Serial.print(y);
+    Serial.print(',');
+    Serial.println(z);
+
+}
+void loop() 
+{
+  
+ }

@@ -1,0 +1,96 @@
+<html>
+  <head>
+    <style>
+       #map-hbrd {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+  </head>
+  <body>
+    <h3 style = “text-align:center;”>MyRideApp Accident Notifications</h3>
+    <div id="map-hbrd"></div>
+
+<script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCVXlp1Pa2MiASDTk0cegRslOyr9Z0XVQo",
+    authDomain: "myrideapp-d598d.firebaseapp.com",
+    databaseURL: "https://myrideapp-d598d.firebaseio.com",
+    projectId: "myrideapp-d598d",
+    storageBucket: "myrideapp-d598d.appspot.com",
+    messagingSenderId: "262820577896"
+  };
+  firebase.initializeApp(config);
+</script>   
+
+<script>
+var map
+var infodisp = new google.maps.InfoWindow();
+var infodel = new google.maps.InfoWindow();
+var markers = [];
+var counter = 0;
+var myrootref = firebase.database().ref();
+var accrefs = [];
+var accidentcontent = ‘empty’;
+function initialize() {
+    
+    var MP = new google.maps.LatLng(22.9734, 78.6569);
+    map = new google.maps.Map(
+        document.getElementById('map-hbrd'), {
+        center: MP,
+        zoom: 4,
+        mapTypeId: ‘hybrid’
+    });
+
+    myrootref.on('child_added', function(data) {
+    accrefs[counter] = data;
+    accidentcontent = ‘data.val().Vehicle’ + ‘, ’ + ‘data.val().Driver’ + ‘<br>’ + ‘data.val().Accident Direction’ + ‘, ’ + ‘data.val().Accident Severity’;
+    var accspot = new google.maps.LatLng(data.val().Lat, data.val().Lon);
+    addMarker(accspot);
+});        
+
+    google.maps.event.addListener(infodel, 'domready', function () {
+        var button = document.getElementById('deleteButton');
+        var id = parseInt(button.getAttribute('data-id'));  
+        button.onclick = function() {
+            deleteMarker(id);
+        };
+    });
+}
+
+function addMarker(location) {
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        id: counter
+    });
+    
+    markers.push(marker);
+    marker.addListener(‘click’, function() {
+		infodisp.setContent(accidentcontent);  //accidentcontent- details string
+		infodisp.open(map,marker);
+		});
+    var deleteButton = '<button id="deleteButton" data-id="' + counter + '">Delete</button>';
+
+    google.maps.event.addListener(marker, 'rightclick', function () {
+        infodel.setContent(deleteButton);
+        infodel.open(map, marker);
+    });
+    counter = counter + 1;
+}
+
+function deleteMarker(markerId) {
+    for (var i=0; i<markers.length; i++) {
+        if (markers[i].id === markerId) {
+            markers[i].setMap(null);
+        }
+    }
+   accrefs[markerId].remove();
+}
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVXlp1Pa2MiASDTk0cegRslOyr9Z0XVQo&callback= initialize">
+    </script>
+  </body>
+</html>

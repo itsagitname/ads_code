@@ -1,0 +1,97 @@
+package projectwork.daiict.vismay.myrideapp;
+
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.hardware.Camera;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
+import android.media.ImageReader;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.PowerManager;
+import android.os.Vibrator;
+import android.telephony.SmsManager;
+import android.view.Surface;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.firebase.database.DatabaseReference;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+
+/**
+ * Created by Administrator on 3/8/2017.
+ */
+// the class will be used to store inteactivity references
+public class MyDepositClass {
+    public static String openscr_devicename = "";
+    public static int openscr_radioselected = -1;
+    public static boolean openscr_waspaused = false;
+    public static BroadcastReceiver formfill_receiver1 = null;
+    public static String formfill_ridername = "";
+    public static String formfill_riderno = "";
+    public static String formfill_mileage = "";
+    public static String formfill_fuelprice = "";
+    public static boolean formfill_waspaused = false;
+    public static boolean formfill_wasdestroyed = false;
+    //members for serviceclass
+    public static boolean myservice_wasdestroyed = false, myservice_wassuspended = false, myservice_wasreset = false;
+    public static boolean dashboard_accinprogress = false;
+    public static boolean dashboard_storeindevice = false;
+    public static boolean dashboard_buttonstate = false;
+    public static String dashboard_statusvalue = null; // another value can be "Disconnected,Accident Detected/Notification Denied"
+    public static String dashboard_buttontext = null; //another value can be "Save Trip,Cancel Help"
+    public static DatabaseReference pushnoderef = null;
+    public static String myfilename = null;
+    public static File datafile,picfile = null;
+    public static CountDownTimer ticktoktimer = null;
+    public static Vibrator vibe = null;
+    public static MediaPlayer myplayer = null;
+    public static double totdist,speedmaxm,speedavg,speed_value,fuelcost;
+    public static String ridername,devicename,datetime0,datetimef,roadstyle,drivestyle;
+    public static double totdist1,totdist2,lat0,long0,latitude_value, longitude_value;
+    public static long t0,tfirst,time_value;
+    public static int count_fair,count_rough1,count_rough2,count_road;
+    public static boolean wasdialed,firstrunn=false,flag=true,driveread,roadread,inmotion;
+
+    //declaring all the utilities..going to be used for service class
+    public static PowerManager.WakeLock myservicewaker;
+    public static String riderno,devicemacid,mileage,fuelprice,latitude_data,longitude_data,speed_data,recent_lat,recent_long,recent_speed,accdirection, accseverity;
+    public static Looper loop1;
+    public static final String mapurl = "https://maps.google.co.in/maps?&z=15&mrt=yp&t=k&q=";
+    public static BroadcastReceiver endreceive;
+    public static BluetoothAdapter mBluetoothAdapter;
+    public static BluetoothSocket mmSocket;
+    public static BluetoothDevice mmDevice;
+    public static InputStream mmInputStream;
+    public static int tmp;
+    public static int[] packetBytes;
+    public static int packetByte;
+    public static Timer t;
+    public static TimerTask tsk;
+    public static HandlerThread mBackgroundThread,LocupThread;
+    public static Handler mBackgroundHandler,uihandler;
+    public static Runnable uirunnable;
+    public static SmsManager smsMngr;
+    public static LocationRequest mLocationRequest;
+    public static GoogleApiClient mGoogleApiClient;
+    public static Camera mycamera;
+    public static int jpegWidth,jpegHeight;
+    public static ImageReader jpegImageReader;
+    public static Surface jpegCaptureSurface;
+    public static CameraDevice mCamera;
+    public static CameraManager cameraManager;
+    public static String cameraId,acctype;
+}
+
